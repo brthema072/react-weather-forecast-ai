@@ -9,6 +9,7 @@ We need a lightweight React weather app that displays the current weather foreca
 - Create a new React application (Vite + React + TypeScript) as the project root.
 - Add a browser geolocation request (with permission handling) to obtain the user's latitude/longitude.
 - Fetch and display the current weather forecast from the Open-Meteo free API using the obtained coordinates.
+- Reverse-geocode the obtained coordinates with BigDataCloud and display the place name alongside current conditions.
 - Show loading, error, and success states with clear user feedback when permission is denied or the API fails.
 - Write OpenSpec planning artifacts: proposal, capability specs (`user-location`, `weather-fetch`), design, and implementation tasks.
 
@@ -27,4 +28,4 @@ We need a lightweight React weather app that displays the current weather foreca
 
 - **New code**: React components (`App`, `Weather`, `LocationStatus`), a geolocation hook (`useGeolocation`), an API client module (`weatherClient`), and a Vite entry point.
 - **Dependencies**: `react`, `react-dom`, `@vitejs/plugin-react` (no heavy 3rd-party libs; fetch is native).
-- **External systems**: Open-Meteo public forecast API (https://api.open-meteo.com/v1/forecast); browser Geolocation API.
+- **External systems**: Open-Meteo public forecast API (https://api.open-meteo.com/v1/forecast); BigDataCloud public reverse-geocoding API; browser Geolocation API. Coordinates are sent to BigDataCloud to resolve the place name.

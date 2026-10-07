@@ -83,6 +83,20 @@ Weather codes returned by Open-Meteo MUST be translated into human-readable cond
 - **WHEN** the response contains a weather code
 - **THEN** the app displays a human-readable weather condition instead of the raw numeric code
 
+### Requirement: Place name is displayed with current weather
+
+The app MUST reverse-geocode the obtained coordinates with the BigDataCloud public reverse-geocoding API and display a usable place name alongside the current temperature and condition. The app MUST prefer `locality`, then `city`, `principalSubdivision`, and `countryName` when selecting the place name.
+
+#### Scenario: Place name resolves successfully
+
+- **WHEN** the reverse-geocoding API returns a usable place name
+- **THEN** the app displays that place name alongside the current temperature and weather condition
+
+#### Scenario: Place name is unavailable
+
+- **WHEN** the reverse-geocoding request fails or returns no usable place name
+- **THEN** the current forecast remains visible and the app displays “Location name unavailable” with the coordinates
+
 ## REMOVED Requirements
 
 N/A — greenfield project; no existing requirements to remove.

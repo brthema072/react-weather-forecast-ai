@@ -1,0 +1,154 @@
+.page {
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  padding: 2rem 1rem;
+  background:
+    radial-gradient(ellipse at 80% 10%, rgb(177 220 255 / 65%), transparent 38%),
+    linear-gradient(145deg, #e9f5ff, #f6f8ff 55%, #e8efff);
+}
+
+.card {
+  width: min(100%, 34rem);
+  padding: clamp(1.75rem, 6vw, 3.5rem);
+  border: 1px solid rgb(255 255 255 / 75%);
+  border-radius: 1.5rem;
+  background: rgb(255 255 255 / 88%);
+  box-shadow: 0 1.5rem 5rem rgb(24 57 99 / 12%);
+  text-align: center;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: #2867a8;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.card h1 {
+  margin: 0;
+  color: #162b45;
+  font-size: clamp(2rem, 7vw, 3rem);
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+.intro {
+  max-width: 26rem;
+  margin: 1rem auto 2rem;
+  color: #52677e;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 3rem;
+  border: 0;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    transform 140ms ease;
+}
+
+.primaryButton {
+  width: 100%;
+  color: #fff;
+  background: #1768b3;
+}
+
+.primaryButton:hover,
+.secondaryButton:hover {
+  transform: translateY(-1px);
+}
+
+.primaryButton:hover {
+  background: #10558f;
+}
+
+.secondaryButton {
+  color: #17558d;
+  background: #e6f2fc;
+}
+
+.secondaryButton:hover {
+  background: #d6eafa;
+}
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible {
+  outline: 3px solid #f0a72f;
+  outline-offset: 3px;
+}
+
+.message,
+.error {
+  border-radius: 0.75rem;
+  padding: 1rem;
+  color: #354b62;
+  background: #eef5fb;
+}
+
+.error {
+  color: #762d25;
+  background: #fff0ed;
+}
+
+.error p {
+  margin: 0 0 1rem;
+}
+
+.weather {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+}
+
+.condition {
+  margin: 0;
+  color: #52677e;
+  font-size: 1.125rem;
+}
+
+.temperature {
+  margin: -0.75rem 0;
+  color: #162b45;
+  font-size: clamp(4rem, 18vw, 6rem);
+  font-weight: 700;
+  letter-spacing: -0.08em;
+  line-height: 1;
+}
+
+.details {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 0 0 0.5rem;
+}
+
+.details div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.details dt {
+  color: #667c91;
+  font-size: 0.8rem;
+}
+
+.details dd {
+  margin: 0;
+  color: #162b45;
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .primaryButton,
+  .secondaryButton {
+    transition: none;
+  }
+}
