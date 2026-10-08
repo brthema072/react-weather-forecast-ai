@@ -4,6 +4,7 @@ import {
   fetchForecast,
   type WeatherData,
 } from './services/weatherClient.ts'
+import { fetchPlaceName } from './services/geocodingClient.ts'
 import styles from './App.module.css'
 
 const emptyWeather: WeatherData = {
@@ -19,6 +20,8 @@ function App() {
   const location = useGeolocation()
   const [weather, setWeather] = useState<WeatherData>(emptyWeather)
   const [retryCount, setRetryCount] = useState(0)
+  const [placeName, setPlaceName] = useState<string | null>(null)
+  const [geocodingLoading, setGeocodingLoading] = useState(false)
 
   useEffect(() => {
     const { latitude, longitude } = location
@@ -55,6 +58,48 @@ function App() {
   }, [location.latitude, location.longitude, retryCount])
 
   const retryWeather = () => setRetryCount((count) => count + 1)
+
+  // Reverse-geocode the obtained coordinates to a place name. This lookup is
+  // independent of the weather request: a failure keeps the forecast visible
+  // and shows "Location name unavailable" with the coordinates instead.
+  useEffect(() => {
+    const { latitude, longitude } = location
+    if (latitude === null || longitude === null) {
+      setPlaceName(null)
+      setGeocodingLoading(false)
+      return
+    }
+
+    let active = true
+    setGeocodingLoading(true)
+    const controller = new AbortController()
+
+    if (controller.signal.aborted) {
+      active = false
+      return
+    }
+
+    const timeoutId = setTimeout(() => controller.abort(), 10_000)
+
+    fetchPlaceName(latitude, longitude, controller.signal)
+      .then((result) => {
+        if (!active) return
+        setGeocodingLoading(false)
+        setPlaceName(result?.name ?? null)
+      })
+      .catch(() => {
+        if (!active) return
+        setGeocodingLoading(false)
+        setPlaceName(null)
+      })
+
+    return () => {
+      active = false
+      setGeocodingLoading(false)
+      clearTimeout(timeoutId)
+      controller.abort()
+    }
+  }, [location.latitude, location.longitude])
 
   return (
     <main className={styles.page}>
@@ -100,6 +145,18 @@ function App() {
           </div>
         ) : (
           <div className={styles.weather} aria-live="polite">
+            {geocodingLoading ? (
+              <p className={styles.message}>Looking up your location…</p>
+            ) : placeName ? (
+              <p className={styles.placeName}>{placeName}</p>
+            ) : (
+              <p className={styles.placeName}>
+                Location name unavailable
+                <span className={styles.coordinates}>
+                  ({location.latitude.toFixed(4)}, {location.longitude.toFixed(4)})
+                </span>
+              </p>
+            )}
             <p className={styles.condition}>{weather.condition}</p>
             <p className={styles.temperature}>
               {weather.temperature === null ? '—' : `${weather.temperature}°`}

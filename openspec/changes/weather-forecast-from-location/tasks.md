@@ -21,7 +21,7 @@
 - [x] 3.4 Handle HTTP errors: verify a 400 shows "invalid coordinates" error UI and a 500 shows "service unavailable"
 - [x] 3.5 Handle network failures (timeout, offline) and verify a no-internet message appears with retry available
 - [x] 3.6 Cancel or guard against updates from aborted requests (e.g., user navigates or retries while pending)
-- [ ] 3.7 Implement BigDataCloud reverse geocoding for the obtained coordinates and display the resolved place name with the current temperature and condition; if lookup fails, keep the forecast visible and show “Location name unavailable” with the coordinates
+- [x] 3.7 Implement BigDataCloud reverse geocoding for the obtained coordinates and display the resolved place name with the current temperature and condition; if lookup fails, keep the forecast visible and show “Location name unavailable” with the coordinates
 
 ## 4. Build the UI and wire capabilities together
 
@@ -34,10 +34,10 @@
 
 ## 5. Verification and cleanup
 
-- [ ] 5.1 Run `npm run build` successfully and confirm no type errors
-- [ ] 5.2 Manually test the full user flow in the browser: deny permission → retry → grant → view weather, and verify each state renders correctly
-- [ ] 5.3 Clean up any leftover debug `console.log` statements
-- [ ] 5.4 Commit scaffolding plus implementation to git
+- [x] 5.1 Run `npm run build` successfully and confirm no type errors
+- [x] 5.2 Manually test the full user flow in the browser: deny permission → retry → grant → view weather, and verify each state renders correctly
+- [x] 5.3 Clean up any leftover debug `console.log` statements
+- [x] 5.4 Commit scaffolding plus implementation to git
 
 ## Workflow follow-up
 
