@@ -74,13 +74,6 @@ function App() {
     setGeocodingLoading(true)
     const controller = new AbortController()
 
-    if (controller.signal.aborted) {
-      active = false
-      return
-    }
-
-    const timeoutId = setTimeout(() => controller.abort(), 10_000)
-
     fetchPlaceName(latitude, longitude, controller.signal)
       .then((result) => {
         if (!active) return
@@ -95,8 +88,6 @@ function App() {
 
     return () => {
       active = false
-      setGeocodingLoading(false)
-      clearTimeout(timeoutId)
       controller.abort()
     }
   }, [location.latitude, location.longitude])

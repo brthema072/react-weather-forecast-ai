@@ -63,11 +63,12 @@ export async function fetchPlaceName(
   const params: FetchPlaceNameParams = { latitude, longitude, signal }
   const url = buildUrl(params)
   const controller = new AbortController()
+  const abortFromCaller = () => controller.abort(signal?.reason)
 
   if (signal?.aborted) {
-    controller.abort()
+    abortFromCaller()
   } else {
-    signal?.addEventListener('abort', () => controller.abort(), { once: true })
+    signal?.addEventListener('abort', abortFromCaller, { once: true })
   }
 
   const timeoutId = setTimeout(() => controller.abort(), GECODING_TIMEOUT_MS)
@@ -93,6 +94,6 @@ export async function fetchPlaceName(
     return null
   } finally {
     clearTimeout(timeoutId)
-    signal?.removeEventListener('abort', () => controller.abort())
+    signal?.removeEventListener('abort', abortFromCaller)
   }
 }
