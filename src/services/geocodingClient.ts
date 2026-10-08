@@ -18,6 +18,7 @@ export interface FetchPlaceNameParams {
 
 export interface PlaceNameResult {
   name: string
+  cityState: string
   latitude: number
   longitude: number
 }
@@ -33,6 +34,23 @@ function resolvePlaceName(json: Record<string, unknown>): string | null {
     if (typeof value === 'string' && value.trim() !== '') {
       return value
     }
+  }
+  return null
+}
+
+/**
+ * Resolve the best place city state name from a BigDataCloud response, preferring
+ * principalSubdivision, then city, then countryName.
+ */
+function resolveCityState(json: Record<string, unknown>): string | null {
+  const fields = ['principalSubdivision', 'city', 'countryName']
+
+  for(const field of fields) {
+    const value = json[field]
+    
+    if (typeof value === 'string' && value.trim() !== '')
+      return value
+
   }
   return null
 }
@@ -85,11 +103,14 @@ export async function fetchPlaceName(
     }
 
     const name = resolvePlaceName(json)
-    if (!name) {
+    if (!name) 
       return null
-    }
 
-    return { name, latitude, longitude }
+    const cityState = resolveCityState(json)
+    if(!cityState) 
+      return null
+
+    return { name, cityState, latitude, longitude }
   } catch {
     return null
   } finally {

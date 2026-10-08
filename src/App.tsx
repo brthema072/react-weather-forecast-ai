@@ -77,8 +77,19 @@ function App() {
     fetchPlaceName(latitude, longitude, controller.signal)
       .then((result) => {
         if (!active) return
+
+        const cityAndCityState = [result?.name, result?.cityState]
+
+        if(cityAndCityState.includes(undefined)) {
+          setGeocodingLoading(false)
+          setPlaceName(null)
+          return
+        }
+
+        const placeName = result?.name + ", " + result?.cityState
+
         setGeocodingLoading(false)
-        setPlaceName(result?.name ?? null)
+        setPlaceName(placeName)
       })
       .catch(() => {
         if (!active) return
