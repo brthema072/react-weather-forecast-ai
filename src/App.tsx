@@ -5,6 +5,7 @@ import {
   type WeatherData,
 } from './services/weatherClient.ts'
 import { fetchPlaceName } from './services/geocodingClient.ts'
+import { AiChat } from './components/ai-chat/AiChat.tsx'
 import styles from './App.module.css'
 
 const emptyWeather: WeatherData = {
@@ -105,6 +106,7 @@ function App() {
 
   return (
     <main className={styles.page}>
+      <AiChat onClose={() => {}} />
       <section className={styles.card} aria-labelledby="page-title">
         <p className={styles.eyebrow}>Local forecast</p>
         <h1 id="page-title">Weather where you are</h1>
