@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/ai-chat/aichat.tsx","./src/hooks/usegeolocation.ts","./src/services/geminiclient.ts","./src/services/geocodingclient.ts","./src/services/weatherclient.ts"],"version":"6.0.3"}
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/ai-chat/aichat.tsx","./src/hooks/usegeolocation.ts","./src/services/chatscope.ts","./src/services/geminiclient.ts","./src/services/geocodingclient.ts","./src/services/weatherclient.ts"],"version":"6.0.3"}

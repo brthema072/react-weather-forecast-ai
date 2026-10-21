@@ -12,6 +12,7 @@
  */
 
 import { ApiError, GoogleGenAI, type Content } from '@google/genai'
+import { OUT_OF_SCOPE_MARKER, toVisibleReply } from './chatScope.ts'
 
 /**
  * Model used when `VITE_GEMINI_MODEL` is not set. `gemini-3.5-flash-lite`
@@ -82,8 +83,10 @@ export function getGeminiModel(): string {
  */
 export function buildSystemInstruction(context: GeminiContext): string {
   const lines = [
-    'Você é o assistente do aplicativo Weather Forecast, que mostra a previsão do tempo atual na localização da pessoa.',
+    'Você é o assistente do aplicativo Weather Forecast, que mostra a previsão do tempo atual na localização da pessoa ou na que ela informar.',
     'Responda de forma breve e direta, em português.',
+    'Você responde apenas sobre clima e meteorologia: as condições atuais do local da pessoa e perguntas de clima em geral.',
+    `Para qualquer assunto que não seja sobre clima, responda exatamente ${OUT_OF_SCOPE_MARKER}, sem nenhuma outra palavra.`,
   ]
 
   const details: string[] = []
@@ -94,9 +97,13 @@ export function buildSystemInstruction(context: GeminiContext): string {
 
   if (details.length > 0) {
     lines.push('Dados atuais do app:', ...details.map((detail) => `- ${detail}`))
-    lines.push('Use esses dados quando a pessoa perguntar sobre o clima atual. Se os dados não forem suficientes para a pergunta, diga isso claramente.')
+    lines.push(
+      'Use esses dados quando a pessoa perguntar sobre o clima atual. Se os dados não forem suficientes para a pergunta, diga isso claramente.',
+    )
   } else {
-    lines.push('O app ainda não tem dados de clima carregados. Se a pessoa perguntar sobre o clima atual, informe que os dados ainda não estão disponíveis.')
+    lines.push(
+      'O app ainda não tem dados de clima carregados. Se a pessoa perguntar sobre o clima atual, informe que os dados ainda não estão disponíveis.',
+    )
   }
 
   return lines.join('\n')
@@ -202,7 +209,10 @@ export async function sendChatMessage(
       throw new ChatError('O Gemini respondeu sem nenhum texto.')
     }
 
-    return text.trim()
+    // The model may decline on its own, using the internal marker. Translate
+    // that into the fixed decline so the text shown to the user is always
+    // the expected one.
+    return toVisibleReply(text.trim())
   } catch (error) {
     if (signal?.aborted) {
       throw error

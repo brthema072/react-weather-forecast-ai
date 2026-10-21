@@ -5,6 +5,7 @@ import {
   type ChatTurn,
   type GeminiContext,
 } from '../../services/geminiClient.ts'
+import { isWeatherRelated, OUT_OF_SCOPE_REPLY } from '../../services/chatScope.ts'
 import styles from './AiChat.module.css'
 
 export interface AiChatMessage extends ChatTurn {
@@ -21,7 +22,7 @@ export interface AiChatProps {
 const WELCOME_MESSAGE: AiChatMessage = {
   id: 'welcome',
   role: 'assistant',
-  text: 'Olá! Sou o assistente do Weather Forecast. Pergunte sobre o clima na sua região ou sobre como o app funciona.',
+  text: 'Olá! Sou o assistente do Weather Forecast. Pergunte sobre o clima na sua região ou sobre meteorologia.',
 }
 
 /**
@@ -147,8 +148,23 @@ export function AiChat({ context, onClose }: AiChatProps) {
 
     const history: AiChatMessage[] = [...messages, userMessage]
 
-    setMessages(history)
     setDraft('')
+
+    // Messages outside the weather scope are declined here, before any
+    // request is made: the fixed reply is answered locally, so no API call
+    // is made and no quota is spent. `isPending` is never set, so the
+    // typing indicator does not appear either.
+    if (!isWeatherRelated(text, messages)) {
+      setMessages(history)
+      setMessages((current) => [
+        ...current,
+        { id: nextMessageId(), role: 'assistant', text: OUT_OF_SCOPE_REPLY },
+      ])
+      isSubmittingRef.current = false
+      return
+    }
+
+    setMessages(history)
     setIsPending(true)
 
     const controller = new AbortController()
@@ -268,7 +284,7 @@ export function AiChat({ context, onClose }: AiChatProps) {
                 value={draft}
                 onChange={(event) => setDraft(event.target.value)}
                 onKeyDown={handleInputKeyDown}
-                placeholder="Escreva sua pergunta…"
+                placeholder="Pergunte sobre o clima…"
                 aria-label="Mensagem para o assistente"
                 disabled={isPending}
               />
