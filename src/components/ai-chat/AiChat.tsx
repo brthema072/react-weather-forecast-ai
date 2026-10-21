@@ -51,6 +51,9 @@ export function AiChat({ context, onClose }: AiChatProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const fabRef = useRef<HTMLButtonElement>(null)
   const abortRef = useRef<AbortController | null>(null)
+  // Synchronous guard: state updates are batched, so two events fired in the
+  // same tick could both see `isPending === false` and send twice.
+  const isSubmittingRef = useRef(false)
 
   // Tracks whether the thread is scrolled close enough to the bottom for the
   // next message to be shown automatically.
@@ -59,9 +62,13 @@ export function AiChat({ context, onClose }: AiChatProps) {
   const hasApiKey = getGeminiApiKey() !== ''
 
   useEffect(() => {
-    if (isOpen) {
-      inputRef.current?.focus()
+    if (!isOpen) {
+      return
     }
+    // Without an API key the footer (and its input) is not rendered, so focus
+    // the panel itself rather than leaving focus on the FAB.
+    const focusTarget = inputRef.current ?? dialogRef.current
+    focusTarget?.focus()
   }, [isOpen])
 
   useEffect(() => {
@@ -126,9 +133,11 @@ export function AiChat({ context, onClose }: AiChatProps) {
 
   const sendDraft = async (): Promise<void> => {
     const text = draft.trim()
-    if (text === '' || isPending) {
+    if (text === '' || isPending || isSubmittingRef.current) {
       return
     }
+
+    isSubmittingRef.current = true
 
     const userMessage: AiChatMessage = {
       id: nextMessageId(),
@@ -167,6 +176,7 @@ export function AiChat({ context, onClose }: AiChatProps) {
       if (abortRef.current === controller) {
         abortRef.current = null
       }
+      isSubmittingRef.current = false
       setIsPending(false)
     }
   }
@@ -192,6 +202,7 @@ export function AiChat({ context, onClose }: AiChatProps) {
         className={styles.fab}
         aria-label={FAB_LABEL}
         aria-expanded={isOpen}
+        aria-controls={isOpen ? 'ai-chat-panel' : undefined}
         onClick={() => setIsOpen(true)}
       >
         <span aria-hidden="true">?</span>
@@ -200,9 +211,11 @@ export function AiChat({ context, onClose }: AiChatProps) {
       {isOpen && (
         <div
           ref={dialogRef}
+          id="ai-chat-panel"
           className={styles.panel}
           role="dialog"
           aria-labelledby="ai-chat-title"
+          tabIndex={-1}
         >
           <div className={styles.header}>
             <h2 id="ai-chat-title" className={styles.title}>
@@ -222,6 +235,7 @@ export function AiChat({ context, onClose }: AiChatProps) {
             ref={threadRef}
             className={styles.thread}
             aria-live="polite"
+            aria-busy={isPending}
             aria-label="Conversa com o assistente"
           >
             {messages.map((message) => (
