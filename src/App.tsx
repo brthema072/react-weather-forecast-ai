@@ -106,7 +106,15 @@ function App() {
 
   return (
     <main className={styles.page}>
-      <AiChat onClose={() => {}} />
+      <AiChat
+        onClose={() => {}}
+        context={{
+          placeName,
+          condition: weather.condition || null,
+          temperature: weather.temperature,
+          windSpeed: weather.windSpeed,
+        }}
+      />
       <section className={styles.card} aria-labelledby="page-title">
         <p className={styles.eyebrow}>Local forecast</p>
         <h1 id="page-title">Weather where you are</h1>

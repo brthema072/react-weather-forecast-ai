@@ -45,6 +45,40 @@ npm run dev
 
 Abra o endereço local mostrado pelo Vite no terminal.
 
+## Assistente de atendimento (Google Gemini)
+
+O botão flutuante no canto inferior direito abre um chat de atendimento. As
+respostas vêm do Google Gemini, e o assistente recebe a localidade, a
+condição, a temperatura e o vento que já aparecem na tela — é possível
+perguntar "está frio agora?" e a resposta usa os dados do app.
+
+### Configuração
+
+1. Obtenha uma chave em [Google AI Studio](https://aistudio.google.com/apikey).
+2. Copie `.env.example` para `.env.local` e preencha a chave:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   ```dotenv
+   VITE_GEMINI_API_KEY=sua-chave-aqui
+   ```
+
+3. Reinicie `npm run dev`.
+
+Sem a chave, o chat continua abrindo e explica que a configuração está
+faltando, mas não faz nenhuma requisição.
+
+O modelo pode ser trocado por `VITE_GEMINI_MODEL` no mesmo arquivo. O padrão
+é `gemini-3.5-flash-lite`, disponível no free tier do Gemini, que tem cota
+diária mais folgada que os modelos maiores.
+
+> **Atenção:** a chave é embutida no bundle do JavaScript e fica visível para
+> qualquer pessoa que abra a aplicação. Isso serve para desenvolvimento local
+> e protótipo. Em produção, a chamada ao Gemini deve passar por um backend
+> próprio. O arquivo `.env.local` não é versionado; o `.env.example` é.
+
 ## Scripts
 
 | Comando | Descrição |
@@ -60,9 +94,15 @@ Abra o endereço local mostrado pelo Vite no terminal.
 src/
 ├── App.tsx                       # Fluxo da interface e estados da previsão
 ├── App.module.css                # Estilos do cartão e dos estados
+├── vite-env.d.ts                 # Tipagem das variáveis de ambiente do Vite
+├── components/
+│   └── ai-chat/
+│       ├── AiChat.tsx            # Widget de chat e estado da conversa
+│       └── AiChat.module.css     # Estilos do painel ancorado no botão flutuante
 ├── hooks/
 │   └── useGeolocation.ts         # Solicitação e estado da localização
 └── services/
     ├── geocodingClient.ts        # Reverse geocoding com BigDataCloud
+    ├── geminiClient.ts           # Respostas do assistente com o Gemini
     └── weatherClient.ts          # Previsão e códigos climáticos Open-Meteo
 ```
