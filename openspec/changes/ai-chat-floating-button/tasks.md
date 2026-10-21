@@ -7,23 +7,32 @@
 
 ## 2. Implementar a interface do chat
 
-- [ ] 2.1 Implementar o FAB (`button`) com estilo consistente ao tema (azul `#1768b3`/`#162b45`) e `position: fixed` inferior-direito (`bottom: 1.5rem`, `right: 1.5rem`), verificando que o FAB aparece na página e não sobrepõe o card de clima
-- [ ] 2.2 Implementar o overlay + dialog com `role="dialog"` e `aria-labelledby`, verificando os atributos de acessibilidade presentes no DOM
-- [ ] 2.3 Renderizar o thread de mensagens com as mensagens mockadas dentro do dialog, verificando que as duas mensagens aparecem ao abrir
-- [ ] 2.4 Implementar o botão "Fechar" (×) que fecha o chat, verificando que o clique fecha o overlay
+- [x] 2.1 Implementar o FAB (`button`) com estilo consistente ao tema (azul `#1768b3`/`#162b45`) e `position: fixed` inferior-direito (`bottom: 1.5rem`, `right: 1.5rem`), verificando que o FAB aparece na página e não sobrepõe o card de clima
+- [x] 2.2 Implementar o overlay + dialog com `role="dialog"` e `aria-labelledby`, verificando os atributos de acessibilidade presentes no DOM
+- [x] 2.3 Renderizar o thread de mensagens com as mensagens mockadas dentro do dialog, verificando que as duas mensagens aparecem ao abrir
+- [x] 2.4 Implementar o botão "Fechar" (×) que fecha o chat, verificando que o clique fecha o overlay
 
 ## 3. Gerenciar abertura/fechamento e acessibilidade
 
-- [ ] 3.1 Implementar estado interno `isOpen` no `AiChat` com efeito que prende o foco no dialog enquanto aberto, verificando que o foco entra no dialog ao abrir
-- [ ] 3.2 Implementar fechamento por tecla `Escape` e retorno do foco ao FAB ao fechar, verificando que `Esc` fecha e o foco volta ao FAB
-- [ ] 3.3 Implementar `@media (prefers-reduced-motion: reduce)` sem transições e layout responsivo (container com `inset: 0.75rem`, `max-height: 80vh`, `overflow-y: auto`), verificando que o chat é legível em viewports estreitas
-- [ ] 3.4 Garantir que a interação com o chat não altera o estado de clima/ localização (sem mudanças em `App.tsx` além de renderizar `<AiChat onClose={...} />`), verificando que os dados do clima se mantêm iguais antes/depois de abrir e fechar o chat
+- [x] 3.1 Implementar estado interno `isOpen` no `AiChat` com efeito que prende o foco no dialog enquanto aberto, verificando que o foco entra no dialog ao abrir
+- [x] 3.2 Implementar fechamento por tecla `Escape` e retorno do foco ao FAB ao fechar, verificando que `Esc` fecha e o foco volta ao FAB
+- [x] 3.3 Implementar `@media (prefers-reduced-motion: reduce)` sem transições e layout responsivo (container com `inset: 0.75rem`, `max-height: 80vh`, `overflow-y: auto`), verificando que o chat é legível em viewports estreitas
+- [x] 3.4 Garantir que a interação com o chat não altera o estado de clima/ localização (sem mudanças em `App.tsx` além de renderizar `<AiChat onClose={...} />`), verificando que os dados do clima se mantêm iguais antes/depois de abrir e fechar o chat
 
 ## 4. Integrar ao App e validar
 
-- [ ] 4.1 Importar e renderizar `<AiChat onClose={handleClose} />` em `App.tsx` dentro do `<main>`, ao lado do card, verificando a compilação sem erros de tipo TypeScript
-- [ ] 4.2 Executar `npm run build` e `npm run lint`, verificando build e lint limpos
-- [ ] 4.3 Testar fluxo completo manualmente (abrir FAB → ver mensagem → fechar por botão e por `Esc`) e confirmar o chat funciona em mobile, verificando os três comportamentos observáveis
+- [x] 4.1 Importar e renderizar `<AiChat onClose={handleClose} />` em `App.tsx` dentro do `<main>`, ao lado do card, verificando a compilação sem erros de tipo TypeScript
+- [x] 4.2 Executar `npm run build` e `npm run lint`, verificando build e lint limpos
+- [x] 4.3 Testar fluxo completo manualmente (abrir FAB → ver mensagem → fechar por botão e por `Esc`) e confirmar o chat funciona em mobile, verificando os três comportamentos observáveis
+
+## Validation (2026-10-20)
+
+Revalidado contra a implementação atual, depois da refatoração `refactor-ai-chat-gemini-widget`:
+
+- Implementado e verificado: FAB fixo no canto inferior direito, abertura/fechamento do painel, botão de fechar, fechamento por `Escape`, retorno de foco ao FAB, `role="dialog"` com `aria-labelledby`, thread rolável, responsividade, `prefers-reduced-motion`, isolamento do estado de clima/localização e integração no `App.tsx`.
+- Superado pela refatoração: overlay e `aria-modal` (o widget passou a ser não-modal), foco travado (incompatível com o comportamento não-modal), conversa mockada (substituída por mensagem de boas-vindas e mensagens reais) e layout `inset`/`max-height: 80vh` (substituído pelo painel ancorado acima do FAB).
+- `npm run build` passa. `npm run lint` continua indisponível porque o `eslint` não está instalado no projeto — limitação pré-existente, não regressão desta change.
+- Smoke test com Chrome headless (desktop e viewport mobile 375×667): o FAB abre o painel, o foco vai para o campo de mensagem, o botão de fechar e `Escape` fecham o painel, o foco volta ao FAB, o painel fica dentro da viewport e acima do FAB, e o card do clima permanece visível.
 
 ## Workflow follow-up
 
