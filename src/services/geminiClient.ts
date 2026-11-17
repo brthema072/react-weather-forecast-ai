@@ -95,17 +95,6 @@ export function buildSystemInstruction(context: GeminiContext): string {
   if (context.temperature !== null) details.push(`Temperatura: ${context.temperature}°C`)
   if (context.windSpeed !== null) details.push(`Velocidade do vento: ${context.windSpeed} km/h`)
 
-  if (details.length > 0) {
-    lines.push('Dados atuais do app:', ...details.map((detail) => `- ${detail}`))
-    lines.push(
-      'Use esses dados quando a pessoa perguntar sobre o clima atual. Se os dados não forem suficientes para a pergunta, diga isso claramente.',
-    )
-  } else {
-    lines.push(
-      'O app ainda não tem dados de clima carregados. Se a pessoa perguntar sobre o clima atual, informe que os dados ainda não estão disponíveis.',
-    )
-  }
-
   return lines.join('\n')
 }
 
